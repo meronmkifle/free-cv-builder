@@ -12,7 +12,7 @@ I just wanted to update my CV, but every site I tried made me do all the work, t
 
 So I built this: a tool that’s actually free, easy to use, and produces a CV that looks good right away — no extra editing needed.
 
-Friends were also asking for templates or help with their resumes, so I figured this could help more people.
+Several people I know also keep asking me for templates or help with their resumes, so I figured this could help more people.
 
 ---
 
