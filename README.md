@@ -10,7 +10,7 @@ A simple, free tool to build a clean, professional CV — no paywalls, no sign-u
 
 I just wanted to update my CV, but every site I tried made me do all the work, then asked for money to download it. A bit frustrating.
 
-So I built this: a tool that’s actually free, easy to use, and produces a CV that looks good right away — no extra editing needed.
+So I built this: a tool that’s actually free, easy to use, and produces a CV that looks good right away, no extra editing needed.
 
 Many people I know also keep asking me for templates or help with their resumes, so I figured this could help more people.
 
@@ -19,7 +19,7 @@ Many people I know also keep asking me for templates or help with their resumes,
 ## Features
 
 - Fill in your info once and export as **Word** or **PDF**
-- Clean, professional design — no formatting headaches
+- Clean, professional design, no formatting headaches
 - Basic job description keyword checker
 - Save multiple versions for different roles
 
