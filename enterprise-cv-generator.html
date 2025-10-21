@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free CV Builder - ATS Optimized</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;}
+body {font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f2f5;color:#333;}
+
+/* Main Layout */
+.app-container {display:flex;min-height:100vh;}
+.sidebar {width:280px;background:#1e293b;color:white;padding:20px;overflow-y:auto;position:fixed;height:100vh;}
+.main-content {flex:1;margin-left:280px;display:flex;}
+.form-section {flex:1;padding:30px;background:#fff;overflow-y:auto;border-right:2px solid #e0e0e0;}
+.preview-section {flex:1;padding:30px;overflow-y:auto;background:#f5f5f5;}
+
+/* Sidebar Styles */
+.logo {font-size:1.5em;font-weight:700;margin-bottom:30px;text-align:center;border-bottom:2px solid #3b82f6;padding-bottom:15px;}
+.nav-item {padding:12px 15px;margin:8px 0;border-radius:8px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:10px;}
+.nav-item:hover, .nav-item.active {background:#3b82f6;}
+.nav-item i {width:20px;}
+.score-card {background:#334155;padding:15px;border-radius:8px;margin-top:20px;}
+.score-value {font-size:2.5em;font-weight:700;color:#10b981;text-align:center;}
+.score-label {text-align:center;font-size:0.9em;opacity:0.8;margin-top:5px;}
+.keyword-badge {background:#3b82f6;padding:4px 8px;border-radius:4px;font-size:0.75em;display:inline-block;margin:3px;}
+
+/* Form Styles */
+.form-header {margin-bottom:30px;}
+.form-header h1 {color:#0f172a;font-size:2em;margin-bottom:10px;}
+.form-header p {color:#666;}
+
+.tab-container {display:flex;gap:10px;margin-bottom:20px;border-bottom:2px solid #e0e0e0;overflow-x:auto;}
+.tab {padding:12px 20px;cursor:pointer;border:none;background:none;font-size:1em;color:#666;transition:all 0.3s;white-space:nowrap;}
+.tab.active {color:#0f172a;border-bottom:3px solid #0f172a;font-weight:600;}
+.tab:hover {color:#0f172a;}
+
+.tab-content {display:none;}
+.tab-content.active {display:block;}
+
+.form-group {margin-bottom:20px;}
+.form-group label {display:block;margin-bottom:8px;font-weight:600;color:#333;}
+.form-group input, .form-group textarea, .form-group select {width:100%;padding:10px;border:1px solid #ddd;border-radius:5px;font-size:1em;font-family:inherit;}
+.form-group textarea {min-height:100px;resize:vertical;}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {outline:none;border-color:#0f172a;}
+.form-group small {color:#666;font-size:0.85em;display:block;margin-top:4px;}
+
+.section-header {background:#0f172a;color:white;padding:15px;margin:30px -30px 20px -30px;font-size:1.3em;}
+
+/* Dynamic Items */
+.dynamic-item {background:#f8f9fa;padding:15px;border-radius:5px;margin-bottom:15px;border-left:4px solid #0f172a;position:relative;}
+.dynamic-item .remove-btn {position:absolute;top:10px;right:10px;background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;font-size:0.85em;}
+.dynamic-item .remove-btn:hover {background:#b91c1c;}
+
+.add-btn {background:#0f172a;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-size:1em;margin-top:10px;}
+.add-btn:hover {background:#1e293b;}
+
+.skill-input-container {display:flex;gap:10px;margin-bottom:10px;}
+.skill-input-container input {flex:1;}
+.skill-input-container button {background:#dc2626;color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;}
+
+/* Action Buttons */
+.action-buttons {position:sticky;top:0;background:white;padding:20px 0;margin-bottom:20px;border-bottom:2px solid #e0e0e0;display:flex;gap:10px;z-index:10;flex-wrap:wrap;}
+.action-buttons button {flex:1;min-width:120px;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;font-size:1em;font-weight:600;transition:all 0.3s;}
+.generate-btn {background:#10b981;color:white;}
+.generate-btn:hover {background:#059669;}
+.download-btn {background:#3b82f6;color:white;}
+.download-btn:hover {background:#2563eb;}
+.save-btn {background:#8b5cf6;color:white;}
+.save-btn:hover {background:#7c3aed;}
+.load-btn {background:#f59e0b;color:white;}
+.load-btn:hover {background:#d97706;}
+
+/* ATS Analyzer */
+.ats-analyzer {background:#f8f9fa;padding:20px;border-radius:8px;border-left:4px solid #3b82f6;margin-bottom:20px;}
+.ats-results {margin-top:15px;}
+.keyword-list {display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.keyword-item {background:#3b82f6;color:white;padding:6px 12px;border-radius:20px;font-size:0.9em;cursor:pointer;transition:all 0.3s;}
+.keyword-item:hover {background:#2563eb;transform:scale(1.05);}
+.keyword-item.matched {background:#10b981;}
+.keyword-item.missing {background:#dc2626;}
+
+.match-score {display:flex;gap:20px;margin-top:15px;}
+.score-box {flex:1;background:white;padding:15px;border-radius:8px;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+.score-box .value {font-size:2em;font-weight:700;color:#3b82f6;}
+.score-box .label {font-size:0.9em;color:#666;margin-top:5px;}
+
+/* Feedback Panel */
+.feedback-panel {background:#fef3c7;border-left:4px solid:#f59e0b;padding:15px;border-radius:5px;margin-bottom:15px;}
+.feedback-item {margin:8px 0;display:flex;align-items:start;gap:8px;}
+.feedback-item i {color:#f59e0b;margin-top:3px;}
+
+/* CV Preview Styles */
+.cv-preview {background:white;box-shadow:0 0 20px rgba(0,0,0,0.1);display:none;}
+.cv-preview.active {display:block;}
+
+.container {max-width:900px;margin:0 auto;background-color:white;box-shadow:0 0 20px rgba(0,0,0,0.1);}
+header {background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:white;padding:35px 40px;text-align:center;}
+header h1 {font-size:2em;margin-bottom:8px;font-weight:700;}
+header p {font-size:1em;margin-bottom:12px;}
+.contact-info {margin-top:12px;}
+.contact-info a {color:white;text-decoration:none;margin:0 10px;font-size:1em;opacity:0.9;transition:opacity 0.3s;}
+.contact-info a:hover {opacity:1;text-decoration:underline;}
+.contact-info i {margin-right:5px;}
+.content {padding:40px;}
+section {margin-bottom:40px;}
+h2 {color:#0f172a;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #0f172a;}
+h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
+.job-title {display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;flex-wrap:wrap;}
+.job-title h3 {margin:0;}
+.date {color:#666;font-style:italic;font-size:0.95em;}
+.company {color:#555;font-size:1.05em;margin-bottom:15px;}
+.experience-item, .education-item {margin-bottom:30px;}
+.cv-preview ul {margin-left:20px;margin-top:10px;}
+.cv-preview li {margin-bottom:8px;}
+.skills {display:flex;flex-wrap:wrap;gap:15px;}
+.skill-tag {background-color:#0f172a;color:white;padding:8px 16px;border-radius:20px;font-size:0.95em;}
+.summary {font-size:1.05em;line-height:1.8;color:#555;background-color:#f8f9fa;padding:20px;border-radius:8px;border-left:4px solid #0f172a;}
+.languages span {display:inline-block;margin-right:20px;margin-bottom:10px;}
+.publication {margin-bottom:15px;padding:15px;background-color:#f8f9fa;border-radius:5px;}
+.publication a {color:#0f172a;text-decoration:none;}
+.publication a:hover {text-decoration:underline;}
+.collapsible {background-color:#f1f1f1;color:#333;cursor:pointer;padding:12px 18px;width:100%;border:none;text-align:left;outline:none;font-size:1.1em;border-left:4px solid #0f172a;margin-bottom:5px;transition:background-color 0.3s;position:relative;padding-left:45px;}
+.collapsible::before {content:"+";position:absolute;left:18px;font-size:1.4em;font-weight:900;color:#dc2626;transition:transform 0.3s;}
+.active-collapsible::before {content:"−";}
+.active-collapsible, .collapsible:hover {background-color:#e2e2e2;}
+.content-collapsible {padding:0 18px;display:none;overflow:hidden;background-color:#fafafa;border-left:4px solid #0f172a;margin-bottom:15px;}
+.content-collapsible p, .content-collapsible ul {padding:15px 0;}
+
+/* Modal */
+.modal {display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);}
+.modal-content {background:white;margin:50px auto;padding:30px;border-radius:8px;max-width:500px;position:relative;}
+.close-modal {position:absolute;right:15px;top:15px;font-size:1.5em;cursor:pointer;color:#666;}
+.close-modal:hover {color:#333;}
+.saved-cv-item {background:#f8f9fa;padding:15px;margin:10px 0;border-radius:5px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.saved-cv-item:hover {background:#e5e7eb;}
+
+@media (max-width:1400px) {
+    .sidebar {width:240px;}
+    .main-content {margin-left:240px;}
+}
+
+@media (max-width:1200px) {
+    .sidebar {display:none;}
+    .main-content {margin-left:0;flex-direction:column;}
+    .form-section {border-right:none;border-bottom:2px solid #e0e0e0;}
+}
+
+@media print {
+    .sidebar, .form-section, .action-buttons {display:none;}
+    .main-content {margin-left:0;}
+    .preview-section {padding:0;}
+    .cv-preview {box-shadow:none;}
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Free CV Builder</div>
+        
+        <div class="nav-item active" onclick="showTab('basic')">
+            <i class="fas fa-user"></i>
+            <span>Basic Info</span>
+        </div>
+        <div class="nav-item" onclick="showTab('ats')">
+            <i class="fas fa-robot"></i>
+            <span>ATS Optimizer</span>
+        </div>
+        <div class="nav-item" onclick="showTab('experience')">
+            <i class="fas fa-briefcase"></i>
+            <span>Experience</span>
+        </div>
+        <div class="nav-item" onclick="showTab('education')">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Education</span>
+        </div>
+        <div class="nav-item" onclick="showTab('skills')">
+            <i class="fas fa-tools"></i>
+            <span>Skills</span>
+        </div>
+        
+        <div class="score-card">
+            <div class="score-value" id="atsScore">0%</div>
+            <div class="score-label">ATS Match Score</div>
+            <div style="margin-top:10px;font-size:0.85em;">
+                <div>Keywords: <span id="keywordCount">0</span></div>
+                <div>Missing: <span id="missingCount">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-header">
+                <h1>Free CV Builder</h1>
+                <p>ATS-optimized professional CV builder with real-time feedback</p>
+            </div>
+
+            <!-- Basic Info Tab -->
+            <div class="tab-content active" id="basic-tab">
+                <h2 style="margin-bottom:20px;">Personal Information</h2>
+                
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" placeholder="John Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label>Professional Title *</label>
+                    <input type="text" id="jobTitle" placeholder="Senior Software Engineer | Full-Stack Developer">
+                    <small>Make it specific and keyword-rich</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Professional Summary *</label>
+                    <textarea id="summary" placeholder="Results-driven professional with X years of experience..."></textarea>
+                    <small>Include 3-5 key achievements with quantifiable results</small>
+                </div>
+                
+                <h3 style="margin-top:30px;margin-bottom:15px;">Contact Information</h3>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="john.smith@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label>LinkedIn</label>
+                    <input type="url" id="linkedin" placeholder="https://linkedin.com/in/johnsmith">
+                </div>
+                
+                <div class="form-group">
+                    <label>GitHub</label>
+                    <input type="url" id="github" placeholder="https://github.com/johnsmith">
+                </div>
+                
+                <div class="form-group">
+                    <label>Twitter/X</label>
+                    <input type="url" id="twitter" placeholder="https://twitter.com/johnsmith">
+                </div>
+                
+                <div class="form-group">
+                    <label>Website/Portfolio</label>
+                    <input type="url" id="website" placeholder="https://johnsmith.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Custom Link</label>
+                    <input type="url" id="otherLink" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Custom Link Label</label>
+                    <input type="text" id="otherLinkLabel" placeholder="Portfolio, Blog, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label>Location (City, Country)</label>
+                    <input type="text" id="location" placeholder="San Francisco, USA">
+                    <small>Optional: Include if location is important for the role</small>
+                </div>
+            </div>
+
+            <!-- ATS Optimizer Tab -->
+            <div class="tab-content" id="ats-tab">
+                <h2 style="margin-bottom:20px;">ATS Optimization</h2>
+                
+                <div class="ats-analyzer">
+                    <h3>Job Description Analyzer</h3>
+                    <p style="margin:10px 0;color:#666;">Paste the job description below to extract keywords and optimize your CV</p>
+                    
+                    <div class="form-group">
+                        <textarea id="jobDescription" placeholder="Paste the complete job description here..." style="min-height:200px;"></textarea>
+                    </div>
+                    
+                    <button class="add-btn" onclick="analyzeJobDescription()">Analyze Job Description</button>
+                    
+                    <div class="ats-results" id="atsResults" style="display:none;">
+                        <h4 style="margin-top:20px;">Extracted Keywords:</h4>
+                        <div class="keyword-list" id="keywordList"></div>
+                        
+                        <div class="match-score">
+                            <div class="score-box">
+                                <div class="value" id="matchScore">0%</div>
+                                <div class="label">Match Rate</div>
+                            </div>
+                            <div class="score-box">
+                                <div class="value" id="keywordsFound">0</div>
+                                <div class="label">Keywords Found</div>
+                            </div>
+                            <div class="score-box">
+                                <div class="value" id="keywordsMissing">0</div>
+                                <div class="label">Missing Keywords</div>
+                            </div>
+                        </div>
+                        
+                        <div class="feedback-panel" style="margin-top:20px;">
+                            <h4 style="margin-bottom:10px;">Recommendations:</h4>
+                            <div id="recommendations"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:30px;">
+                    <h3>ATS-Friendly Tips</h3>
+                    <ul style="margin-left:20px;margin-top:10px;line-height:1.8;">
+                        <li>Use standard section headings (Work Experience, Education, Skills)</li>
+                        <li>Include both acronyms and full terms (SEO and Search Engine Optimization)</li>
+                        <li>Use simple formatting without tables or graphics</li>
+                        <li>Quantify achievements with numbers and percentages</li>
+                        <li>Mirror language from the job description</li>
+                        <li>Save as PDF or DOCX for best compatibility</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Experience Tab -->
+            <div class="tab-content" id="experience-tab">
+                <h2 style="margin-bottom:20px;">Work Experience</h2>
+                
+                <div id="experienceContainer"></div>
+                <button class="add-btn" onclick="addExperience()">Add Work Experience</button>
+            </div>
+
+            <!-- Education Tab -->
+            <div class="tab-content" id="education-tab">
+                <h2 style="margin-bottom:20px;">Education</h2>
+                
+                <div id="educationContainer"></div>
+                <button class="add-btn" onclick="addEducation()">Add Education</button>
+                
+                <h3 style="margin-top:40px;margin-bottom:15px;">Certifications (Optional)</h3>
+                <div id="certificationsContainer"></div>
+                <button class="add-btn" onclick="addCertification()">Add Certification</button>
+            </div>
+
+            <!-- Skills Tab -->
+            <div class="tab-content" id="skills-tab">
+                <h2 style="margin-bottom:20px;">Skills & Languages</h2>
+                
+                <h3>Technical Skills</h3>
+                <div id="skillsContainer"></div>
+                <div class="skill-input-container">
+                    <input type="text" id="newSkill" placeholder="Enter a skill">
+                    <button onclick="addSkill()">Add</button>
+                </div>
+                
+                <h3 style="margin-top:30px;">Languages</h3>
+                <div id="languagesContainer"></div>
+                <button class="add-btn" onclick="addLanguage()">Add Language</button>
+                
+                <h3 style="margin-top:30px;">Publications / Links (Optional)</h3>
+                <div class="form-group">
+                    <label>ORCID or Portfolio URL</label>
+                    <input type="url" id="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div class="action-buttons">
+                <button class="generate-btn" onclick="generateCV()">Generate CV</button>
+                <button class="download-btn" onclick="downloadWord()">Download Word Doc</button>
+                <button class="save-btn" onclick="saveCV()">Save Version</button>
+                <button class="load-btn" onclick="openLoadModal()">Load Saved</button>
+                <button style="background:#6366f1;color:white;" onclick="window.print()">Print/PDF</button>
+            </div>
+            
+            <div class="cv-preview" id="cvPreview">
+                <div class="container">
+                    <p style="text-align:center;padding:100px 40px;color:#999;">
+                        Click "Generate CV" to preview your professional CV
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load CV Modal -->
+<div id="loadModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeLoadModal()">&times;</span>
+        <h2 style="margin-bottom:20px;">Load Saved CV</h2>
+        <div id="savedCVList"></div>
+    </div>
+</div>
+
+<script>
+// Global state
+let skills = [];
+let experiences = [];
+let education = [];
+let certifications = [];
+let languages = [];
+let expId = 0;
+let eduId = 0;
+let certId = 0;
+let langId = 0;
+let extractedKeywords = [];
+let currentJobDescription = '';
+
+// Navigation
+function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Update nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.nav-item').classList.add('active');
+}
+
+// Skills Management
+function addSkill() {
+    const input = document.getElementById('newSkill');
+    const skill = input.value.trim();
+    if (skill) {
+        skills.push(skill);
+        input.value = '';
+        renderSkills();
+        updateATSScore();
+    }
+}
+
+function removeSkill(index) {
+    skills.splice(index, 1);
+    renderSkills();
+    updateATSScore();
+}
+
+function renderSkills() {
+    const container = document.getElementById('skillsContainer');
+    container.innerHTML = skills.map((skill, index) => `
+        <div class="dynamic-item">
+            <strong>${skill}</strong>
+            <button class="remove-btn" onclick="removeSkill(${index})">Remove</button>
+        </div>
+    `).join('');
+}
+
+// Experience Management
+function addExperience() {
+    const exp = {
+        id: expId++,
+        position: '',
+        company: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        responsibilities: ['']
+    };
+    experiences.push(exp);
+    renderExperiences();
+}
+
+function removeExperience(id) {
+    experiences = experiences.filter(exp => exp.id !== id);
+    renderExperiences();
+}
+
+function addResponsibility(expId) {
+    const exp = experiences.find(e => e.id === expId);
+    exp.responsibilities.push('');
+    renderExperiences();
+}
+
+function renderExperiences() {
+    const container = document.getElementById('experienceContainer');
+    container.innerHTML = experiences.map(exp => `
+        <div class="dynamic-item">
+            <button class="remove-btn" onclick="removeExperience(${exp.id})">Remove</button>
+            <div class="form-group">
+                <label>Position Title *</label>
+                <input type="text" value="${exp.position}" onchange="updateExperience(${exp.id}, 'position', this.value)" placeholder="Senior Software Engineer">
+            </div>
+            <div class="form-group">
+                <label>Company Name *</label>
+                <input type="text" value="${exp.company}" onchange="updateExperience(${exp.id}, 'company', this.value)" placeholder="Tech Corporation Inc.">
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" value="${exp.location}" onchange="updateExperience(${exp.id}, 'location', this.value)" placeholder="San Francisco, CA">
+            </div>
+            <div class="form-group">
+                <label>Start Date *</label>
+                <input type="text" value="${exp.startDate}" onchange="updateExperience(${exp.id}, 'startDate', this.value)" placeholder="January 2020">
+            </div>
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="text" value="${exp.endDate}" onchange="updateExperience(${exp.id}, 'endDate', this.value)" placeholder="Present or December 2023" ${exp.current ? 'disabled' : ''}>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" ${exp.current ? 'checked' : ''} onchange="updateExperience(${exp.id}, 'current', this.checked)">
+                    Currently working here
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Key Achievements (use action verbs and quantify results)</label>
+                ${exp.responsibilities.map((resp, idx) => `
+                    <textarea onchange="updateResponsibility(${exp.id}, ${idx}, this.value)" style="margin-bottom:10px;" placeholder="• Increased sales by 40% through implementation of new CRM system">${resp}</textarea>
+                `).join('')}
+                <button class="add-btn" onclick="addResponsibility(${exp.id})">Add Achievement</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateExperience(id, field, value) {
+    const exp = experiences.find(e => e.id === id);
+    exp[field] = value;
+    if (field === 'current' && value) {
+        exp.endDate = 'Present';
+        renderExperiences();
+    }
+    updateATSScore();
+}
+
+function updateResponsibility(expId, idx, value) {
+    const exp = experiences.find(e => e.id === expId);
+    exp.responsibilities[idx] = value;
+    updateATSScore();
+}
+
+// Education Management
+function addEducation() {
+    const edu = {
+        id: eduId++,
+        degree: '',
+        institution: '',
+        location: '',
+        year: '',
+        gpa: '',
+        thesis: ''
+    };
+    education.push(edu);
+    renderEducation();
+}
+
+function removeEducation(id) {
+    education = education.filter(edu => edu.id !== id);
+    renderEducation();
+}
+
+function renderEducation() {
+    const container = document.getElementById('educationContainer');
+    container.innerHTML = education.map(edu => `
+        <div class="dynamic-item">
+            <button class="remove-btn" onclick="removeEducation(${edu.id})">Remove</button>
+            <div class="form-group">
+                <label>Degree *</label>
+                <input type="text" value="${edu.degree}" onchange="updateEducation(${edu.id}, 'degree', this.value)" placeholder="Master of Science in Computer Science">
+            </div>
+            <div class="form-group">
+                <label>Institution *</label>
+                <input type="text" value="${edu.institution}" onchange="updateEducation(${edu.id}, 'institution', this.value)" placeholder="University of California, Berkeley">
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" value="${edu.location}" onchange="updateEducation(${edu.id}, 'location', this.value)" placeholder="Berkeley, CA">
+            </div>
+            <div class="form-group">
+                <label>Year *</label>
+                <input type="text" value="${edu.year}" onchange="updateEducation(${edu.id}, 'year', this.value)" placeholder="2020">
+            </div>
+            <div class="form-group">
+                <label>GPA (Optional)</label>
+                <input type="text" value="${edu.gpa}" onchange="updateEducation(${edu.id}, 'gpa', this.value)" placeholder="3.8/4.0">
+            </div>
+            <div class="form-group">
+                <label>Thesis/Honors (Optional)</label>
+                <input type="text" value="${edu.thesis}" onchange="updateEducation(${edu.id}, 'thesis', this.value)" placeholder="Thesis: Machine Learning in Healthcare">
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateEducation(id, field, value) {
+    const edu = education.find(e => e.id === id);
+    edu[field] = value;
+}
+
+// Certifications Management
+function addCertification() {
+    const cert = {
+        id: certId++,
+        name: '',
+        issuer: '',
+        date: '',
+        credential: ''
+    };
+    certifications.push(cert);
+    renderCertifications();
+}
+
+function removeCertification(id) {
+    certifications = certifications.filter(cert => cert.id !== id);
+    renderCertifications();
+}
+
+function renderCertifications() {
+    const container = document.getElementById('certificationsContainer');
+    container.innerHTML = certifications.map(cert => `
+        <div class="dynamic-item">
+            <button class="remove-btn" onclick="removeCertification(${cert.id})">Remove</button>
+            <div class="form-group">
+                <label>Certification Name</label>
+                <input type="text" value="${cert.name}" onchange="updateCertification(${cert.id}, 'name', this.value)" placeholder="AWS Certified Solutions Architect">
+            </div>
+            <div class="form-group">
+                <label>Issuing Organization</label>
+                <input type="text" value="${cert.issuer}" onchange="updateCertification(${cert.id}, 'issuer', this.value)" placeholder="Amazon Web Services">
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="text" value="${cert.date}" onchange="updateCertification(${cert.id}, 'date', this.value)" placeholder="January 2023">
+            </div>
+            <div class="form-group">
+                <label>Credential ID (Optional)</label>
+                <input type="text" value="${cert.credential}" onchange="updateCertification(${cert.id}, 'credential', this.value)" placeholder="ABC-123-XYZ">
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateCertification(id, field, value) {
+    const cert = certifications.find(c => c.id === id);
+    cert[field] = value;
+}
+
+// Languages Management
+function addLanguage() {
+    const lang = {
+        id: langId++,
+        name: '',
+        proficiency: ''
+    };
+    languages.push(lang);
+    renderLanguages();
+}
+
+function removeLanguage(id) {
+    languages = languages.filter(lang => lang.id !== id);
+    renderLanguages();
+}
+
+function renderLanguages() {
+    const container = document.getElementById('languagesContainer');
+    container.innerHTML = languages.map(lang => `
+        <div class="dynamic-item">
+            <button class="remove-btn" onclick="removeLanguage(${lang.id})">Remove</button>
+            <div class="form-group">
+                <label>Language</label>
+                <input type="text" value="${lang.name}" onchange="updateLanguage(${lang.id}, 'name', this.value)" placeholder="Spanish">
+            </div>
+            <div class="form-group">
+                <label>Proficiency</label>
+                <select value="${lang.proficiency}" onchange="updateLanguage(${lang.id}, 'proficiency', this.value)">
+                    <option value="">Select proficiency</option>
+                    <option value="Native">Native</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Working Proficiency">Working Proficiency</option>
+                    <option value="Basic">Basic</option>
+                </select>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateLanguage(id, field, value) {
+    const lang = languages.find(l => l.id === id);
+    lang[field] = value;
+}
+
+// Job Description Analysis
+function analyzeJobDescription() {
+    const jd = document.getElementById('jobDescription').value;
+    if (!jd.trim()) {
+        alert('Please paste a job description first');
+        return;
+    }
+    
+    currentJobDescription = jd;
+    
+    // Extract keywords (simplified algorithm)
+    const keywords = extractKeywords(jd);
+    extractedKeywords = keywords;
+    
+    // Display keywords
+    const keywordList = document.getElementById('keywordList');
+    keywordList.innerHTML = keywords.map(kw => {
+        const matched = checkKeywordMatch(kw);
+        const className = matched ? 'keyword-item matched' : 'keyword-item missing';
+        return `<div class="${className}" onclick="suggestKeyword('${kw}')" title="${matched ? 'Found in your CV' : 'Click to get suggestions'}">${kw}</div>`;
+    }).join('');
+    
+    // Calculate match score
+    const matchedCount = keywords.filter(kw => checkKeywordMatch(kw)).length;
+    const matchRate = keywords.length > 0 ? Math.round((matchedCount / keywords.length) * 100) : 0;
+    
+    document.getElementById('matchScore').textContent = matchRate + '%';
+    document.getElementById('keywordsFound').textContent = matchedCount;
+    document.getElementById('keywordsMissing').textContent = keywords.length - matchedCount;
+    
+    // Generate recommendations
+    generateRecommendations(keywords, matchedCount);
+    
+    // Show results
+    document.getElementById('atsResults').style.display = 'block';
+    
+    // Update sidebar score
+    updateATSScore();
+}
+
+function extractKeywords(text) {
+    // Common keywords categories
+    const technicalTerms = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/g) || [];
+    const acronyms = text.match(/\b[A-Z]{2,}\b/g) || [];
+    
+    // Common skills patterns
+    const skillPatterns = [
+        /\b(?:Python|Java|JavaScript|React|Node\.js|SQL|AWS|Azure|Docker|Kubernetes|Git|Agile|Scrum)\b/gi,
+        /\b(?:machine learning|data analysis|project management|team leadership|problem solving)\b/gi,
+        /\b(?:bachelor|master|degree|certification|certified)\b/gi
+    ];
+    
+    let keywords = [];
+    skillPatterns.forEach(pattern => {
+        const matches = text.match(pattern) || [];
+        keywords = keywords.concat(matches);
+    });
+    
+    // Remove duplicates and clean
+    keywords = [...new Set(keywords.map(k => k.trim()))];
+    
+    // Limit to top 30 keywords
+    return keywords.slice(0, 30);
+}
+
+function checkKeywordMatch(keyword) {
+    // Check if keyword exists in CV data
+    const cvText = JSON.stringify({
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        summary: document.getElementById('summary').value,
+        skills: skills,
+        experiences: experiences,
+        education: education
+    }).toLowerCase();
+    
+    return cvText.includes(keyword.toLowerCase());
+}
+
+function suggestKeyword(keyword) {
+    if (!checkKeywordMatch(keyword)) {
+        alert(`Suggestion: Add "${keyword}" to your skills section or work experience descriptions to improve your ATS match rate.`);
+    }
+}
+
+function generateRecommendations(keywords, matchedCount) {
+    const recommendations = [];
+    const matchRate = keywords.length > 0 ? (matchedCount / keywords.length) * 100 : 0;
+    
+    if (matchRate < 50) {
+        recommendations.push('Your match rate is low. Consider adding more relevant keywords from the job description.');
+    } else if (matchRate < 75) {
+        recommendations.push('Good match! Add a few more missing keywords to improve your score.');
+    } else {
+        recommendations.push('Excellent match! Your CV is well-optimized for this position.');
+    }
+    
+    const missingKeywords = keywords.filter(kw => !checkKeywordMatch(kw));
+    if (missingKeywords.length > 0) {
+        recommendations.push(`Focus on adding these high-priority keywords: ${missingKeywords.slice(0, 5).join(', ')}`);
+    }
+    
+    if (!document.getElementById('summary').value) {
+        recommendations.push('Add a professional summary to improve your ATS score.');
+    }
+    
+    const recContainer = document.getElementById('recommendations');
+    recContainer.innerHTML = recommendations.map(rec => `
+        <div class="feedback-item">
+            <i class="fas fa-lightbulb"></i>
+            <span>${rec}</span>
+        </div>
+    `).join('');
+}
+
+function updateATSScore() {
+    if (extractedKeywords.length === 0) {
+        document.getElementById('atsScore').textContent = 'N/A';
+        document.getElementById('keywordCount').textContent = '0';
+        document.getElementById('missingCount').textContent = '0';
+        return;
+    }
+    
+    const matchedCount = extractedKeywords.filter(kw => checkKeywordMatch(kw)).length;
+    const matchRate = Math.round((matchedCount / extractedKeywords.length) * 100);
+    
+    document.getElementById('atsScore').textContent = matchRate + '%';
+    document.getElementById('keywordCount').textContent = matchedCount;
+    document.getElementById('missingCount').textContent = extractedKeywords.length - matchedCount;
+}
+
+// Generate CV
+function generateCV() {
+    const fullName = document.getElementById('fullName').value;
+    const jobTitle = document.getElementById('jobTitle').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const linkedin = document.getElementById('linkedin').value;
+    const github = document.getElementById('github').value;
+    const twitter = document.getElementById('twitter').value;
+    const website = document.getElementById('website').value;
+    const otherLink = document.getElementById('otherLink').value;
+    const otherLinkLabel = document.getElementById('otherLinkLabel').value;
+    const location = document.getElementById('location').value;
+    const summary = document.getElementById('summary').value;
+    const orcid = document.getElementById('orcid').value;
+
+    if (!fullName || !jobTitle || !summary) {
+        alert('Please fill in the required fields: Full Name, Professional Title, and Summary');
+        return;
+    }
+
+    let contactLinks = '';
+    if (email) contactLinks += `<a href="mailto:${email}"><i class="fas fa-envelope"></i>Email</a>`;
+    if (phone) contactLinks += `<a href="tel:${phone}"><i class="fas fa-phone"></i>Phone</a>`;
+    if (linkedin) contactLinks += `<a href="${linkedin}" target="_blank"><i class="fab fa-linkedin"></i>LinkedIn</a>`;
+    if (github) contactLinks += `<a href="${github}" target="_blank"><i class="fab fa-github"></i>GitHub</a>`;
+    if (twitter) contactLinks += `<a href="${twitter}" target="_blank"><i class="fab fa-twitter"></i>Twitter</a>`;
+    if (website) contactLinks += `<a href="${website}" target="_blank"><i class="fas fa-globe"></i>Website</a>`;
+    if (otherLink && otherLinkLabel) contactLinks += `<a href="${otherLink}" target="_blank"><i class="fas fa-link"></i>${otherLinkLabel}</a>`;
+
+    let skillsHTML = skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+
+    let experienceHTML = experiences.map(exp => {
+        const dateText = exp.current ? `${exp.startDate} - Present` : `${exp.startDate} - ${exp.endDate}`;
+        const respList = exp.responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('');
+        const locationText = exp.location ? `<span style="color:#666;font-size:0.9em;"> | ${exp.location}</span>` : '';
+        return `
+            <button class="collapsible">${exp.position} <span class="date">${dateText}</span></button>
+            <div class="content-collapsible">
+                <p class="company">${exp.company}${locationText}</p>
+                <ul>${respList}</ul>
+            </div>
+        `;
+    }).join('');
+
+    let educationHTML = education.map(edu => {
+        const locationText = edu.location ? ` | ${edu.location}` : '';
+        const gpaText = edu.gpa ? `<p>GPA: ${edu.gpa}</p>` : '';
+        return `
+            <div class="education-item">
+                <div class="job-title"><h3>${edu.degree}</h3><span class="date">${edu.year}</span></div>
+                <p class="company">${edu.institution}${locationText}</p>
+                ${gpaText}
+                ${edu.thesis ? `<p><strong>Thesis:</strong> ${edu.thesis}</p>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    let certificationsHTML = certifications.map(cert => {
+        const credText = cert.credential ? ` (${cert.credential})` : '';
+        return `
+            <div style="margin-bottom:15px;">
+                <strong>${cert.name}</strong> - ${cert.issuer}, ${cert.date}${credText}
+            </div>
+        `;
+    }).join('');
+
+    let languagesHTML = languages.map(lang => 
+        `<span><strong>${lang.name}:</strong> ${lang.proficiency}</span>`
+    ).join('');
+
+    const locationHTML = location ? `<p style="font-size:0.95em;opacity:0.9;"><i class="fas fa-map-marker-alt"></i> ${location}</p>` : '';
+
+    const cvHTML = `
+        <div class="container">
+            <header>
+                <h1>${fullName}</h1>
+                <p>${jobTitle}</p>
+                ${locationHTML}
+                ${contactLinks ? `<div class="contact-info">${contactLinks}</div>` : ''}
+            </header>
+
+            <div class="content">
+                ${summary ? `
+                <section>
+                    <h2>Professional Summary</h2>
+                    <div class="summary">${summary}</div>
+                </section>
+                ` : ''}
+
+                ${skills.length > 0 ? `
+                <section>
+                    <h2>Skills</h2>
+                    <div class="skills">${skillsHTML}</div>
+                </section>
+                ` : ''}
+
+                ${experiences.length > 0 ? `
+                <section>
+                    <h2>Work Experience</h2>
+                    <p style="color:#666;font-style:italic;margin-bottom:15px;font-size:0.95em;">Click on any position to view details</p>
+                    ${experienceHTML}
+                </section>
+                ` : ''}
+
+                ${education.length > 0 ? `
+                <section>
+                    <h2>Education</h2>
+                    ${educationHTML}
+                </section>
+                ` : ''}
+
+                ${certifications.length > 0 ? `
+                <section>
+                    <h2>Certifications</h2>
+                    ${certificationsHTML}
+                </section>
+                ` : ''}
+
+                ${languages.length > 0 ? `
+                <section>
+                    <h2>Languages</h2>
+                    <div class="languages">${languagesHTML}</div>
+                </section>
+                ` : ''}
+
+                ${orcid ? `
+                <section>
+                    <h2>Publications</h2>
+                    <div class="publication">
+                        <a href="${orcid}" target="_blank"><i class="fab fa-orcid"></i> View Publications</a>
+                    </div>
+                </section>
+                ` : ''}
+            </div>
+        </div>
+    `;
+
+    const preview = document.getElementById('cvPreview');
+    preview.innerHTML = cvHTML;
+    preview.classList.add('active');
+
+    // Initialize collapsibles
+    const collapsibles = preview.querySelectorAll(".collapsible");
+    collapsibles.forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("active-collapsible");
+            const content = btn.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    });
+
+    // Scroll to preview on mobile
+    if (window.innerWidth <= 1200) {
+        preview.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Download CV as Word Document
+function downloadWord() {
+    const preview = document.getElementById('cvPreview');
+    if (!preview.classList.contains('active')) {
+        alert('Please generate your CV first');
+        return;
+    }
+
+    const fullName = document.getElementById('fullName').value || 'CV';
+    const filename = fullName.replace(/\s+/g, '-').toLowerCase() + '-cv.doc';
+
+    // Get CV content without collapsible buttons - expand all sections
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = preview.innerHTML;
+    
+    // Remove collapsible buttons and show all content
+    const collapsibles = tempDiv.querySelectorAll('.collapsible');
+    collapsibles.forEach(btn => {
+        const content = btn.nextElementSibling;
+        if (content && content.classList.contains('content-collapsible')) {
+            // Create a simple div with the position and date
+            const position = btn.textContent.trim();
+            const heading = document.createElement('h3');
+            heading.textContent = position;
+            heading.style.marginBottom = '10px';
+            btn.parentNode.replaceChild(heading, btn);
+            
+            // Show the content
+            content.style.display = 'block';
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = content.innerHTML;
+            newDiv.style.marginBottom = '20px';
+            content.parentNode.replaceChild(newDiv, content);
+        }
+    });
+    
+    const cvContent = tempDiv.innerHTML;
+    
+    // Create Word-compatible HTML document
+    const wordHTML = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${fullName} - Professional CV</title>
+<style>
+@page {
+    margin: 1in;
+}
+body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #000000;
+}
+.container {
+    width: 100%;
+}
+header {
+    background: #0f172a;
+    color: white;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+header h1 {
+    font-size: 24pt;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+header p {
+    font-size: 12pt;
+    margin-bottom: 10px;
+}
+.contact-info {
+    margin-top: 10px;
+    font-size: 10pt;
+}
+.contact-info a {
+    color: white;
+    text-decoration: none;
+    margin: 0 8px;
+}
+.content {
+    padding: 20px 0;
+}
+section {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+}
+h2 {
+    color: #0f172a;
+    font-size: 16pt;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #0f172a;
+    font-weight: bold;
+}
+h3 {
+    color: #333333;
+    font-size: 12pt;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.job-title {
+    margin-bottom: 5px;
+}
+.date {
+    color: #666666;
+    font-style: italic;
+    font-size: 10pt;
+}
+.company {
+    color: #555555;
+    font-size: 11pt;
+    margin-bottom: 10px;
+}
+.experience-item, .education-item {
+    margin-bottom: 20px;
+}
+ul {
+    margin-left: 20px;
+    margin-top: 8px;
+}
+li {
+    margin-bottom: 6px;
+}
+.skills {
+    margin-top: 10px;
+}
+.skill-tag {
+    display: inline-block;
+    background-color: #0f172a;
+    color: white;
+    padding: 5px 12px;
+    margin: 4px;
+    border-radius: 3px;
+    font-size: 10pt;
+}
+.summary {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #555555;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-left: 4px solid #0f172a;
+}
+.languages span {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 8px;
+}
+.publication {
+    margin-bottom: 10px;
+    padding: 12px;
+    background-color: #f8f9fa;
+}
+.publication a {
+    color: #0f172a;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+${cvContent}
+</body>
+</html>`;
+
+    // Create blob and download
+    const blob = new Blob(['\ufeff', wordHTML], { 
+        type: 'application/msword;charset=utf-8' 
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Save/Load CV
+function saveCV() {
+    const cvData = {
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        linkedin: document.getElementById('linkedin').value,
+        github: document.getElementById('github').value,
+        twitter: document.getElementById('twitter').value,
+        website: document.getElementById('website').value,
+        otherLink: document.getElementById('otherLink').value,
+        otherLinkLabel: document.getElementById('otherLinkLabel').value,
+        location: document.getElementById('location').value,
+        summary: document.getElementById('summary').value,
+        orcid: document.getElementById('orcid').value,
+        skills: skills,
+        experiences: experiences,
+        education: education,
+        certifications: certifications,
+        languages: languages,
+        savedDate: new Date().toISOString()
+    };
+    
+    const cvName = prompt('Enter a name for this CV version:', cvData.fullName + ' - ' + new Date().toLocaleDateString());
+    if (!cvName) return;
+    
+    const savedCVs = JSON.parse(localStorage.getItem('savedCVs') || '{}');
+    savedCVs[cvName] = cvData;
+    localStorage.setItem('savedCVs', JSON.stringify(savedCVs));
+    
+    alert('CV saved successfully!');
+}
+
+function openLoadModal() {
+    const savedCVs = JSON.parse(localStorage.getItem('savedCVs') || '{}');
+    const list = document.getElementById('savedCVList');
+    
+    if (Object.keys(savedCVs).length === 0) {
+        list.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No saved CVs found</p>';
+    } else {
+        list.innerHTML = Object.keys(savedCVs).map(name => {
+            const cv = savedCVs[name];
+            const date = new Date(cv.savedDate).toLocaleDateString();
+            return `
+                <div class="saved-cv-item" onclick="loadCV('${name}')">
+                    <div>
+                        <strong>${name}</strong>
+                        <div style="font-size:0.85em;color:#666;">Saved: ${date}</div>
+                    </div>
+                    <button class="remove-btn" onclick="event.stopPropagation(); deleteCV('${name}')">Delete</button>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    document.getElementById('loadModal').style.display = 'block';
+}
+
+function closeLoadModal() {
+    document.getElementById('loadModal').style.display = 'none';
+}
+
+function loadCV(name) {
+    const savedCVs = JSON.parse(localStorage.getItem('savedCVs') || '{}');
+    const cvData = savedCVs[name];
+    
+    if (!cvData) {
+        alert('CV not found');
+        return;
+    }
+    
+    // Load data
+    document.getElementById('fullName').value = cvData.fullName || '';
+    document.getElementById('jobTitle').value = cvData.jobTitle || '';
+    document.getElementById('email').value = cvData.email || '';
+    document.getElementById('phone').value = cvData.phone || '';
+    document.getElementById('linkedin').value = cvData.linkedin || '';
+    document.getElementById('github').value = cvData.github || '';
+    document.getElementById('twitter').value = cvData.twitter || '';
+    document.getElementById('website').value = cvData.website || '';
+    document.getElementById('otherLink').value = cvData.otherLink || '';
+    document.getElementById('otherLinkLabel').value = cvData.otherLinkLabel || '';
+    document.getElementById('location').value = cvData.location || '';
+    document.getElementById('summary').value = cvData.summary || '';
+    document.getElementById('orcid').value = cvData.orcid || '';
+    
+    skills = cvData.skills || [];
+    experiences = cvData.experiences || [];
+    education = cvData.education || [];
+    certifications = cvData.certifications || [];
+    languages = cvData.languages || [];
+    
+    // Reset IDs
+    expId = experiences.length > 0 ? Math.max(...experiences.map(e => e.id)) + 1 : 0;
+    eduId = education.length > 0 ? Math.max(...education.map(e => e.id)) + 1 : 0;
+    certId = certifications.length > 0 ? Math.max(...certifications.map(c => c.id)) + 1 : 0;
+    langId = languages.length > 0 ? Math.max(...languages.map(l => l.id)) + 1 : 0;
+    
+    // Render
+    renderSkills();
+    renderExperiences();
+    renderEducation();
+    renderCertifications();
+    renderLanguages();
+    
+    closeLoadModal();
+    alert('CV loaded successfully!');
+}
+
+function deleteCV(name) {
+    if (!confirm('Are you sure you want to delete this CV?')) return;
+    
+    const savedCVs = JSON.parse(localStorage.getItem('savedCVs') || '{}');
+    delete savedCVs[name];
+    localStorage.setItem('savedCVs', JSON.stringify(savedCVs));
+    
+    openLoadModal();
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    addExperience();
+    addEducation();
+});
+</script>
+</body>
+</html>
