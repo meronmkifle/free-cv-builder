@@ -17,6 +17,15 @@ body {font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f2f5
 .form-section {flex:1;padding:30px;background:#fff;overflow-y:auto;border-right:2px solid #e0e0e0;}
 .preview-section {flex:1;padding:30px;overflow-y:auto;background:#f5f5f5;}
 
+/* Mobile Header */
+.mobile-header {display:none;background:#1e293b;color:white;padding:15px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.mobile-header-content {display:flex;justify-content:space-between;align-items:center;}
+.mobile-logo {font-size:1.2em;font-weight:700;}
+.menu-toggle {background:none;border:none;color:white;font-size:1.5em;cursor:pointer;padding:5px;}
+.mobile-nav {display:none;background:#1e293b;position:fixed;top:60px;left:0;right:0;bottom:0;z-index:99;overflow-y:auto;padding:20px;}
+.mobile-nav.active {display:block;}
+.mobile-score {background:#334155;padding:15px;border-radius:8px;margin:15px 0;}
+
 /* Sidebar Styles */
 .logo {font-size:1.5em;font-weight:700;margin-bottom:30px;text-align:center;border-bottom:2px solid #3b82f6;padding-bottom:15px;}
 .nav-item {padding:12px 15px;margin:8px 0;border-radius:8px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:10px;}
@@ -144,13 +153,35 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
 
 @media (max-width:1200px) {
     .sidebar {display:none;}
-    .main-content {margin-left:0;flex-direction:column;}
+    .mobile-header {display:block;}
+    .main-content {margin-left:0;flex-direction:column;margin-top:60px;}
     .form-section {border-right:none;border-bottom:2px solid #e0e0e0;}
+    .preview-section {min-height:auto;}
+}
+
+@media (max-width:768px) {
+    .form-section, .preview-section {padding:15px;}
+    .form-header h1 {font-size:1.5em;}
+    .action-buttons {flex-direction:column;}
+    .action-buttons button {width:100%;margin-bottom:10px;min-width:auto;}
+    .tab-container {flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .match-score {flex-direction:column;gap:10px;}
+    .score-box {width:100%;}
+    header h1 {font-size:1.5em;}
+    header {padding:25px 20px;}
+    .content {padding:20px;}
+    h2 {font-size:1.5em;}
+    .contact-info {display:flex;flex-direction:column;gap:8px;}
+    .contact-info a {margin:0;}
+    .dynamic-item {padding:12px;padding-top:35px;}
+    .skill-input-container {flex-direction:column;}
+    .skill-input-container button {width:100%;padding:12px;}
+    .modal-content {margin:20px;padding:20px;max-width:calc(100% - 40px);}
 }
 
 @media print {
-    .sidebar, .form-section, .action-buttons {display:none;}
-    .main-content {margin-left:0;}
+    .sidebar, .form-section, .action-buttons, .mobile-header, .mobile-nav {display:none;}
+    .main-content {margin-left:0;margin-top:0;}
     .preview-section {padding:0;}
     .cv-preview {box-shadow:none;}
 }
@@ -158,6 +189,49 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
 </head>
 <body>
 <div class="app-container">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">Free CV Builder</div>
+            <button class="menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="nav-item active" onclick="showTab('basic'); toggleMobileMenu();">
+            <i class="fas fa-user"></i>
+            <span>Basic Info</span>
+        </div>
+        <div class="nav-item" onclick="showTab('experience'); toggleMobileMenu();">
+            <i class="fas fa-briefcase"></i>
+            <span>Experience</span>
+        </div>
+        <div class="nav-item" onclick="showTab('education'); toggleMobileMenu();">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Education</span>
+        </div>
+        <div class="nav-item" onclick="showTab('skills'); toggleMobileMenu();">
+            <i class="fas fa-tools"></i>
+            <span>Skills</span>
+        </div>
+        <div class="nav-item" onclick="showTab('ats'); toggleMobileMenu();">
+            <i class="fas fa-robot"></i>
+            <span>ATS Optimizer</span>
+        </div>
+        
+        <div class="mobile-score">
+            <div class="score-value" id="atsScoreMobile">0%</div>
+            <div class="score-label">ATS Match Score</div>
+            <div style="margin-top:10px;font-size:0.85em;">
+                <div>Keywords: <span id="keywordCountMobile">0</span></div>
+                <div>Missing: <span id="missingCountMobile">0</span></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">Free CV Builder</div>
@@ -419,6 +493,12 @@ let extractedKeywords = [];
 let currentJobDescription = '';
 let customPublications = [];
 
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById('mobileNav');
+    mobileNav.classList.toggle('active');
+}
+
 // Navigation
 function showTab(tabName) {
     // Hide all tabs
@@ -429,11 +509,26 @@ function showTab(tabName) {
     // Show selected tab
     document.getElementById(tabName + '-tab').classList.add('active');
     
-    // Update nav items
+    // Update nav items in both desktop and mobile
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    event.target.closest('.nav-item').classList.add('active');
+    
+    // Find and activate the clicked nav item
+    const clickedItem = event.target.closest('.nav-item');
+    if (clickedItem) {
+        clickedItem.classList.add('active');
+        // Also activate the corresponding item in the other menu
+        const isMobile = clickedItem.closest('.mobile-nav');
+        const otherMenu = isMobile ? document.querySelector('.sidebar') : document.querySelector('.mobile-nav');
+        if (otherMenu) {
+            const items = otherMenu.querySelectorAll('.nav-item');
+            const index = Array.from(clickedItem.parentNode.querySelectorAll('.nav-item')).indexOf(clickedItem);
+            if (items[index]) {
+                items[index].classList.add('active');
+            }
+        }
+    }
 }
 
 // Skills Management
@@ -862,6 +957,9 @@ function updateATSScore() {
         document.getElementById('atsScore').textContent = 'N/A';
         document.getElementById('keywordCount').textContent = '0';
         document.getElementById('missingCount').textContent = '0';
+        document.getElementById('atsScoreMobile').textContent = 'N/A';
+        document.getElementById('keywordCountMobile').textContent = '0';
+        document.getElementById('missingCountMobile').textContent = '0';
         return;
     }
     
@@ -871,6 +969,9 @@ function updateATSScore() {
     document.getElementById('atsScore').textContent = matchRate + '%';
     document.getElementById('keywordCount').textContent = matchedCount;
     document.getElementById('missingCount').textContent = extractedKeywords.length - matchedCount;
+    document.getElementById('atsScoreMobile').textContent = matchRate + '%';
+    document.getElementById('keywordCountMobile').textContent = matchedCount;
+    document.getElementById('missingCountMobile').textContent = extractedKeywords.length - matchedCount;
 }
 
 // Generate CV
@@ -1269,12 +1370,12 @@ function openLoadModal() {
             const cv = savedCVs[name];
             const date = new Date(cv.savedDate).toLocaleDateString();
             return `
-                <div class="saved-cv-item" onclick="loadCV('${name}')">
+                <div class="saved-cv-item" onclick="loadCV('${name.replace(/'/g, "\\'")}')">
                     <div>
                         <strong>${name}</strong>
                         <div style="font-size:0.85em;color:#666;">Saved: ${date}</div>
                     </div>
-                    <button class="remove-btn" onclick="event.stopPropagation(); deleteCV('${name}')">Delete</button>
+                    <button class="remove-btn" onclick="event.stopPropagation(); deleteCV('${name.replace(/'/g, "\\'")}')">Delete</button>
                 </div>
             `;
         }).join('');
