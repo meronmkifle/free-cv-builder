@@ -1,12 +1,10 @@
 # Free CV Builder
 
-Professional CV builder with real-time ATS optimization
+A free, clean UI CV builder with basic ATS optimisation
 
 ## Features
-- Real-time ATS score calculation
 - Job description keyword analyzer
-- Download as Word document
+- Download as Word or PDF document
 - Save multiple CV versions
-- Mobile responsive
 
 [Use the CV Builder](https://meronmkifle.github.io/free-cv-builder/)
