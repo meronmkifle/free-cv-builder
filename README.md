@@ -9,4 +9,5 @@
    - Save multiple CV versions
    - Mobile responsive
    
-   [Use the CV Builder]([https://YOUR-USERNAME.github.io/free-cv-builder/](https://meronmkifle.github.io/free-cv-builder/))
+   [Use the CV Builder]
+   ([https://YOUR-USERNAME.github.io/free-cv-builder/](https://meronmkifle.github.io/free-cv-builder/](https://meronmkifle.github.io/free-cv-builder/)))
