@@ -166,10 +166,6 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
             <i class="fas fa-user"></i>
             <span>Basic Info</span>
         </div>
-        <div class="nav-item" onclick="showTab('ats')">
-            <i class="fas fa-robot"></i>
-            <span>ATS Optimizer</span>
-        </div>
         <div class="nav-item" onclick="showTab('experience')">
             <i class="fas fa-briefcase"></i>
             <span>Experience</span>
@@ -181,6 +177,10 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
         <div class="nav-item" onclick="showTab('skills')">
             <i class="fas fa-tools"></i>
             <span>Skills</span>
+        </div>
+        <div class="nav-item" onclick="showTab('ats')">
+            <i class="fas fa-robot"></i>
+            <span>ATS Optimizer</span>
         </div>
         
         <div class="score-card">
@@ -271,6 +271,48 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
                 </div>
             </div>
 
+            <!-- Experience Tab -->
+            <div class="tab-content" id="experience-tab">
+                <h2 style="margin-bottom:20px;">Work Experience</h2>
+                
+                <div id="experienceContainer"></div>
+                <button class="add-btn" onclick="addExperience()">Add Work Experience</button>
+            </div>
+
+            <!-- Education Tab -->
+            <div class="tab-content" id="education-tab">
+                <h2 style="margin-bottom:20px;">Education</h2>
+                
+                <div id="educationContainer"></div>
+                <button class="add-btn" onclick="addEducation()">Add Education</button>
+                
+                <h3 style="margin-top:40px;margin-bottom:15px;">Certifications (Optional)</h3>
+                <div id="certificationsContainer"></div>
+                <button class="add-btn" onclick="addCertification()">Add Certification</button>
+            </div>
+
+            <!-- Skills Tab -->
+            <div class="tab-content" id="skills-tab">
+                <h2 style="margin-bottom:20px;">Skills & Languages</h2>
+                
+                <h3>Technical Skills</h3>
+                <div id="skillsContainer"></div>
+                <div class="skill-input-container">
+                    <input type="text" id="newSkill" placeholder="Enter a skill">
+                    <button onclick="addSkill()">Add</button>
+                </div>
+                
+                <h3 style="margin-top:30px;">Languages</h3>
+                <div id="languagesContainer"></div>
+                <button class="add-btn" onclick="addLanguage()">Add Language</button>
+                
+                <h3 style="margin-top:30px;">Publications / Links (Optional)</h3>
+                <div class="form-group">
+                    <label>ORCID or Portfolio URL</label>
+                    <input type="url" id="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
+                </div>
+            </div>
+
             <!-- ATS Optimizer Tab -->
             <div class="tab-content" id="ats-tab">
                 <h2 style="margin-bottom:20px;">ATS Optimization</h2>
@@ -321,48 +363,6 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
                         <li>Mirror language from the job description</li>
                         <li>Save as PDF or DOCX for best compatibility</li>
                     </ul>
-                </div>
-            </div>
-
-            <!-- Experience Tab -->
-            <div class="tab-content" id="experience-tab">
-                <h2 style="margin-bottom:20px;">Work Experience</h2>
-                
-                <div id="experienceContainer"></div>
-                <button class="add-btn" onclick="addExperience()">Add Work Experience</button>
-            </div>
-
-            <!-- Education Tab -->
-            <div class="tab-content" id="education-tab">
-                <h2 style="margin-bottom:20px;">Education</h2>
-                
-                <div id="educationContainer"></div>
-                <button class="add-btn" onclick="addEducation()">Add Education</button>
-                
-                <h3 style="margin-top:40px;margin-bottom:15px;">Certifications (Optional)</h3>
-                <div id="certificationsContainer"></div>
-                <button class="add-btn" onclick="addCertification()">Add Certification</button>
-            </div>
-
-            <!-- Skills Tab -->
-            <div class="tab-content" id="skills-tab">
-                <h2 style="margin-bottom:20px;">Skills & Languages</h2>
-                
-                <h3>Technical Skills</h3>
-                <div id="skillsContainer"></div>
-                <div class="skill-input-container">
-                    <input type="text" id="newSkill" placeholder="Enter a skill">
-                    <button onclick="addSkill()">Add</button>
-                </div>
-                
-                <h3 style="margin-top:30px;">Languages</h3>
-                <div id="languagesContainer"></div>
-                <button class="add-btn" onclick="addLanguage()">Add Language</button>
-                
-                <h3 style="margin-top:30px;">Publications / Links (Optional)</h3>
-                <div class="form-group">
-                    <label>ORCID or Portfolio URL</label>
-                    <input type="url" id="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
                 </div>
             </div>
 
