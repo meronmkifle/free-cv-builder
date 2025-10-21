@@ -1,6 +1,6 @@
 # Free CV Builder
 
-A simple, free tool to build a clean, professional CV — no paywalls, no sign-ups, no formatting stress.
+A simple, free tool to build a clean, professional CV, no paywalls, no sign-ups, no formatting stress.
 
 🔗 [Link to Free CV Builder](https://github.com/meronmkifle/free-cv-builder/tree/main)
 
