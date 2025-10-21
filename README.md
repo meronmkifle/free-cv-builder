@@ -2,7 +2,7 @@
 
 A simple, free tool to build a clean, professional CV. No paywalls, no sign-ups, no formatting stress :)
 
-🔗 [Link to Free CV Builder](https://github.com/meronmkifle/free-cv-builder/tree/main)
+🔗 [Link to Free CV Builder]([https://github.com/meronmkifle/free-cv-builder/tree/main](https://meronmkifle.github.io/free-cv-builder/))
 
 ---
 
