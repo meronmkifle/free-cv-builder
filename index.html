@@ -308,9 +308,14 @@ h3 {color:#333;font-size:1.3em;margin-bottom:5px;}
                 
                 <h3 style="margin-top:30px;">Publications / Links (Optional)</h3>
                 <div class="form-group">
-                    <label>ORCID or Portfolio URL</label>
+                    <label>ORCID URL (Optional)</label>
                     <input type="url" id="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
                 </div>
+                
+                <h4 style="margin-top:20px;margin-bottom:15px;">Custom Links</h4>
+                <p style="color:#666;font-size:0.9em;margin-bottom:15px;">Add portfolios, publications, projects, or any other relevant links</p>
+                <div id="customPublicationsContainer"></div>
+                <button class="add-btn" onclick="addCustomPublication()">Add Custom Link</button>
             </div>
 
             <!-- ATS Optimizer Tab -->
@@ -409,8 +414,10 @@ let expId = 0;
 let eduId = 0;
 let certId = 0;
 let langId = 0;
+let pubId = 0;
 let extractedKeywords = [];
 let currentJobDescription = '';
+let customPublications = [];
 
 // Navigation
 function showTab(tabName) {
@@ -692,6 +699,49 @@ function updateLanguage(id, field, value) {
     lang[field] = value;
 }
 
+// Custom Publications Management
+function addCustomPublication() {
+    const pub = {
+        id: pubId++,
+        title: '',
+        url: '',
+        description: ''
+    };
+    customPublications.push(pub);
+    renderCustomPublications();
+}
+
+function removeCustomPublication(id) {
+    customPublications = customPublications.filter(pub => pub.id !== id);
+    renderCustomPublications();
+}
+
+function renderCustomPublications() {
+    const container = document.getElementById('customPublicationsContainer');
+    container.innerHTML = customPublications.map(pub => `
+        <div class="dynamic-item">
+            <button class="remove-btn" onclick="removeCustomPublication(${pub.id})">Remove</button>
+            <div class="form-group">
+                <label>Link Title</label>
+                <input type="text" value="${pub.title}" onchange="updateCustomPublication(${pub.id}, 'title', this.value)" placeholder="e.g., Research Paper, Portfolio, GitHub Project">
+            </div>
+            <div class="form-group">
+                <label>URL</label>
+                <input type="url" value="${pub.url}" onchange="updateCustomPublication(${pub.id}, 'url', this.value)" placeholder="https://example.com/your-link">
+            </div>
+            <div class="form-group">
+                <label>Description (Optional)</label>
+                <input type="text" value="${pub.description}" onchange="updateCustomPublication(${pub.id}, 'description', this.value)" placeholder="Brief description of this link">
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateCustomPublication(id, field, value) {
+    const pub = customPublications.find(p => p.id === id);
+    pub[field] = value;
+}
+
 // Job Description Analysis
 function analyzeJobDescription() {
     const jd = document.getElementById('jobDescription').value;
@@ -949,12 +999,18 @@ function generateCV() {
                 </section>
                 ` : ''}
 
-                ${orcid ? `
+                ${orcid || customPublications.filter(p => p.title && p.url).length > 0 ? `
                 <section>
-                    <h2>Publications</h2>
-                    <div class="publication">
+                    <h2>Publications & Links</h2>
+                    ${orcid ? `<div class="publication">
                         <a href="${orcid}" target="_blank"><i class="fab fa-orcid"></i> View Publications</a>
-                    </div>
+                    </div>` : ''}
+                    ${customPublications.filter(p => p.title && p.url).map(pub => `
+                        <div class="publication">
+                            <a href="${pub.url}" target="_blank"><i class="fas fa-link"></i> <strong>${pub.title}</strong></a>
+                            ${pub.description ? `<p style="margin-top:8px;color:#666;font-size:0.95em;">${pub.description}</p>` : ''}
+                        </div>
+                    `).join('')}
                 </section>
                 ` : ''}
             </div>
@@ -1188,6 +1244,7 @@ function saveCV() {
         education: education,
         certifications: certifications,
         languages: languages,
+        customPublications: customPublications,
         savedDate: new Date().toISOString()
     };
     
@@ -1259,12 +1316,14 @@ function loadCV(name) {
     education = cvData.education || [];
     certifications = cvData.certifications || [];
     languages = cvData.languages || [];
+    customPublications = cvData.customPublications || [];
     
     // Reset IDs
     expId = experiences.length > 0 ? Math.max(...experiences.map(e => e.id)) + 1 : 0;
     eduId = education.length > 0 ? Math.max(...education.map(e => e.id)) + 1 : 0;
     certId = certifications.length > 0 ? Math.max(...certifications.map(c => c.id)) + 1 : 0;
     langId = languages.length > 0 ? Math.max(...languages.map(l => l.id)) + 1 : 0;
+    pubId = customPublications.length > 0 ? Math.max(...customPublications.map(p => p.id)) + 1 : 0;
     
     // Render
     renderSkills();
@@ -1272,6 +1331,7 @@ function loadCV(name) {
     renderEducation();
     renderCertifications();
     renderLanguages();
+    renderCustomPublications();
     
     closeLoadModal();
     alert('CV loaded successfully!');
