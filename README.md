@@ -1,6 +1,6 @@
 # Free CV Builder
 
-🎯 Professional CV builder with real-time ATS optimization
+Professional CV builder with real-time ATS optimization
 
 ## Features
 - Real-time ATS score calculation
