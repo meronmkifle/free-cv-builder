@@ -22,8 +22,6 @@ Many people I know also keep asking me for templates or help with their resumes,
 - Clean, professional design, no formatting headaches
 - Basic job description keyword checker
 - Save multiple versions for different roles
-- Mobile responsive - can use it on your cell phone easily
-
 ---
 
 ## Preview
