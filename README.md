@@ -1,5 +1,4 @@
 # Free CV Builder
-
 A simple, free tool to build a clean, professional CV. No paywalls, no sign-ups, no formatting stress :)
 
 🔗 [Link to free CV Builder site ](https://meronmkifle.github.io/free-cv-builder/)
@@ -7,26 +6,32 @@ A simple, free tool to build a clean, professional CV. No paywalls, no sign-ups,
 ---
 
 ## Why I Built This
-
 I just wanted to update my CV, but every site I tried made me do all the work, then asked for money to download it. A bit frustrating.
 
-So I built this: a tool that’s actually free, easy to use, and produces a CV that looks good right away, no extra editing needed.
+So I built this: a tool that's actually free, easy to use, and produces a CV that looks good right away, no extra editing needed.
 
 Many people I know also keep asking me for templates or help with their resumes, so I figured this could help more people.
 
 ---
 
 ## Features
-
 - Fill in your info once and export as **Word** or **PDF**
 - Clean, professional design, no formatting headaches
 - Basic job description keyword checker
 - Save multiple versions for different roles
 - Mobile responsive
+
+---
+
+## Support
+
+If this tool helped you land an interview or saved you time, consider buying me a coffee! ☕
+
+<a href="https://buymeacoffee.com/qhl34mcne4" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 ---
 
 ## Preview 
-
 <p align="left">
   <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%201of2.png" width="45%" />
   <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%202of2.png" width="45%" />  
@@ -37,7 +42,6 @@ Many people I know also keep asking me for templates or help with their resumes,
 ---
 
 ## Feedback Welcome
-
 Got ideas for features or found a bug?  
 Please reach out here: [LinkedIn](https://www.linkedin.com/in/meronmkifle/)
 
@@ -48,7 +52,6 @@ Please reach out here: [LinkedIn](https://www.linkedin.com/in/meronmkifle/)
 ---
 
 ## License
-
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
   <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
 </a>  
