@@ -27,9 +27,11 @@ Many people I know also keep asking me for templates or help with their resumes,
 
 ## Preview
 
-<p align="center">
+<p align="left">
   <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%201of2.png" width="45%" />
-  <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%202of2.png" width="45%" />
+  <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%202of2.png" width="45%" />  
+  <img src="https://github.com/meronmkifle/free-cv-builder/blob/main/CV%20Builder%20Mobile%20Version%20Screenshot%20page1.png" width="45%" />  
+  <img src="https://github.com/meronmkifle/free-cv-builder/blob/main/CV%20Builder%20Mobile%20Version%20Screenshot.jpeg" width="45%" />
 </p>
 
 ---
