@@ -25,7 +25,7 @@ Many people I know also keep asking me for templates or help with their resumes,
 - Mobile responsive
 ---
 
-## Preview
+## Preview (Desktop & Mobile versions)
 
 <p align="left">
   <img src="https://raw.githubusercontent.com/meronmkifle/free-cv-builder/main/CV%20Builder%20Screenshot%201of2.png" width="45%" />
